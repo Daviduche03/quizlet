@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { ChartNoAxesColumn, Heart, House, UserRound } from "lucide-react-native";
+import { ChartNoAxesColumn, Heart, House, UserRound, LayoutDashboard } from "lucide-react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,11 +18,12 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: {
           backgroundColor: '#ffffff', // plain white
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-          paddingBottom: Platform.OS === 'ios' ? 20 : 10,
-          paddingTop: 10,
-          height: Platform.OS === 'ios' ? 90 : 70,
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+          paddingBottom: Platform.OS === 'ios' ? 35 : 25,
+          paddingTop: 15,
+          paddingHorizontal: 30,
+          height: Platform.OS === 'ios' ? 105 : 85,
           shadowColor: '#000000',
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
@@ -30,8 +31,12 @@ export default function TabLayout() {
           elevation: 8,
         },
         tabBarShowLabel: false,
+        tabBarItemStyle: {
+          paddingHorizontal: 15,
+          paddingVertical: 8,
+        },
         tabBarIconStyle: {
-          marginBottom: 2,
+          marginBottom: 0,
         },
       }}>
       <Tabs.Screen
