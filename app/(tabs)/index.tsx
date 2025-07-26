@@ -27,7 +27,32 @@ export default function HomeScreen() {
       </View>
 
       {/* Content */}
-      <View className="flex-1 items-center justify-center">
+      <View className="flex-1 px-6 py-4">
+        {/* Blue Card */}
+        <View className="bg-blue-600 rounded-3xl p-8 mb-6 shadow-lg">
+          <View className="flex-row justify-between items-start mb-6">
+            <View className="flex-1">
+              <Text className="text-white text-lg font-medium mb-1">
+                Your Progress
+              </Text>
+              <Text className="text-blue-100 text-sm">
+                Keep going, you're doing great!
+              </Text>
+            </View>
+            <View className="bg-white/10 rounded-full p-3">
+              <Text className="text-white text-xs font-bold">85%</Text>
+            </View>
+          </View>
+
+          <View className="bg-white/10 rounded-full h-2 mb-4">
+            <View className="bg-white rounded-full h-2 w-4/5" />
+          </View>
+
+          <Text className="text-white/80 text-sm">
+            12 of 15 lessons completed
+          </Text>
+        </View>
+
         <Text className="text-xl font-bold text-blue-500">
           Welcome to Nativewind!
         </Text>
