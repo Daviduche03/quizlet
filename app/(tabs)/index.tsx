@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Atom, BookOpen, Calculator, ChevronRight, Clock, Globe, LayoutDashboard, Palette, Search } from "lucide-react-native";
 import { useEffect } from "react";
 import { Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -9,7 +10,7 @@ import Animated, {
   withTiming
 } from "react-native-reanimated";
 
-const AnimatedCategoryCard = ({ children, index }: { children: React.ReactNode; index: number }) => {
+const AnimatedCategoryCard = ({ children, index, onPress }: { children: React.ReactNode; index: number; onPress?: () => void }) => {
   const scale = useSharedValue(0.8);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
@@ -64,6 +65,7 @@ const AnimatedCategoryCard = ({ children, index }: { children: React.ReactNode; 
         damping: 15,
         stiffness: 200,
       });
+      onPress?.();
     }, 100);
   };
 
@@ -255,14 +257,14 @@ export default function HomeScreen() {
       <View className="bg-white pt-14 pb-6 px-6 flex-row justify-between items-center shadow-sm">
         <LayoutDashboard size={28} color="#6b7280" />
         <Image
-          source={require('@/assets/images/profile.jpg')}
+          source={require('@/assets/images/profile.avif')}
           className="w-10 h-10 rounded-full border border-blue-600 "
         />
       </View>
 
       {/* Search Component */}
       <View className="bg-white px-6 pb-4">
-        <View className="bg-gray-100 rounded-2xl px-4 py-2 flex-row items-center">
+        <View className="bg-gray-100 rounded-3xl px-4 py-2 flex-row items-center">
           <Search size={20} color="#6b7280" />
           <TextInput
             placeholder="Search for quiz..."
@@ -327,7 +329,11 @@ export default function HomeScreen() {
               snapToAlignment="start"
             >
               {categories.map((category: CategoryCardProps, index) => (
-                <AnimatedCategoryCard key={index} index={index}>
+                <AnimatedCategoryCard 
+                  key={index} 
+                  index={index}
+                  onPress={() => router.push('/quiz')}
+                >
                   <View className="bg-white rounded-3xl p-6 mr-4 shadow-sm border border-gray-100 min-w-[160px]">
                     <View className="flex-row items-center justify-between mb-4">
                       {category.icon}
@@ -350,7 +356,11 @@ export default function HomeScreen() {
 
             <View className="space-y-3 gap-3">
               {subjects.map((subject: SubjectCardProps, index) => (
-                <Pressable className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100" key={index}>
+                <Pressable 
+                  className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100" 
+                  key={index}
+                  onPress={() => router.push('/quiz')}
+                >
                   <View className="flex-row items-center">
                     <View className="bg-orange-100 rounded-xl p-3 mr-4">
                       {subject.icon}

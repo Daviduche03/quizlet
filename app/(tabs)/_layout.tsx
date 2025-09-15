@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { ChartNoAxesColumn, Heart, House, UserRound, LayoutDashboard } from "lucide-react-native";
+import { Bot, Heart, House, UserRound } from "lucide-react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -16,16 +16,22 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#6b7280', // gray-500
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarBackground: () => null, // Remove default background
         tabBarStyle: {
+          position: 'absolute',
           backgroundColor: '#ffffff', // plain white
+          borderTopWidth: 0, // Remove the black top border
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           paddingBottom: Platform.OS === 'ios' ? 35 : 25,
           paddingTop: 15,
           paddingHorizontal: 30,
           height: Platform.OS === 'ios' ? 105 : 85,
-          shadowColor: '#000000',
-          shadowOffset: { width: 0, height: -2 },
+          left: 0,
+          right: 0,
+          bottom: 0,
+          // shadowColor: '#000000',
+          // shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
           shadowRadius: 8,
           elevation: 8,
@@ -51,14 +57,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="analytics"
+        name="ai-chat"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <ChartNoAxesColumn
+            <Bot
               size={focused ? 30 : 26}
               color={color}
             />
           ),
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen

@@ -1,110 +1,143 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {
+    BookOpen,
+    ChevronRight,
+    Clock,
+    Heart,
+    Search,
+    Star
+} from 'lucide-react-native';
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+export default function FavoritesScreen() {
+    return (
+        <View className="flex-1 bg-gray-50">
+            {/* Header */}
+            <View className="bg-white pt-14 pb-6 px-6 shadow-sm">
+                <Text className="text-2xl font-bold text-gray-800 mb-4">Favorites</Text>
 
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
+                {/* Search Bar */}
+                <View className="bg-gray-100 rounded-2xl px-4 py-2 flex-row items-center">
+                    <Search size={18} color="#6b7280" />
+                    <TextInput
+                        placeholder="Search your favorites..."
+                        placeholderTextColor="#9ca3af"
+                        className="flex-1 ml-3 text-gray-800"
+                    />
+                </View>
+            </View>
+            <ScrollView className="flex-1 px-6 py-4" showsVerticalScrollIndicator={false}>
+                {/* Favorite Quizzes */}
+                <Text className="text-lg font-semibold text-gray-800 mb-4">Saved Quizzes</Text>
+
+                <View className="space-y-3 gap-2">
+                    {/* Quiz Item 1 */}
+                    <Pressable className="bg-white rounded-2xl p-4 shadow-sm flex-row items-center">
+                        <View className="bg-orange-100 rounded-xl p-3 mr-4">
+                            <BookOpen size={20} color="#f97316" />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-gray-800 font-semibold text-base mb-1">Advanced Mathematics</Text>
+                            <Text className="text-gray-500 text-sm mb-1">Calculus & Algebra • 25 questions</Text>
+                            <View className="flex-row items-center">
+                                <Star size={12} color="#fbbf24" />
+                                <Text className="text-gray-600 text-xs ml-1">4.8</Text>
+                                <Clock size={12} color="#6b7280" className="ml-3" />
+                                <Text className="text-gray-600 text-xs ml-1">45 min</Text>
+                            </View>
+                        </View>
+                        <Heart size={18} color="#ef4444" />
+                    </Pressable>
+
+                    {/* Quiz Item 2 */}
+                    <Pressable className="bg-white rounded-2xl p-4 shadow-sm flex-row items-center">
+                        <View className="bg-blue-100 rounded-xl p-3 mr-4">
+                            <BookOpen size={20} color="#3b82f6" />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-gray-800 font-semibold text-base mb-1">World History</Text>
+                            <Text className="text-gray-500 text-sm mb-1">Ancient Civilizations • 20 questions</Text>
+                            <View className="flex-row items-center">
+                                <Star size={12} color="#fbbf24" />
+                                <Text className="text-gray-600 text-xs ml-1">4.6</Text>
+                                <Clock size={12} color="#6b7280" className="ml-3" />
+                                <Text className="text-gray-600 text-xs ml-1">30 min</Text>
+                            </View>
+                        </View>
+                        <Heart size={18} color="#ef4444" />
+                    </Pressable>
+
+                    {/* Quiz Item 3 */}
+                    <Pressable className="bg-white rounded-2xl p-4 shadow-sm flex-row items-center">
+                        <View className="bg-green-100 rounded-xl p-3 mr-4">
+                            <BookOpen size={20} color="#10b981" />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-gray-800 font-semibold text-base mb-1">Science Fundamentals</Text>
+                            <Text className="text-gray-500 text-sm mb-1">Physics & Chemistry • 18 questions</Text>
+                            <View className="flex-row items-center">
+                                <Star size={12} color="#fbbf24" />
+                                <Text className="text-gray-600 text-xs ml-1">4.9</Text>
+                                <Clock size={12} color="#6b7280" className="ml-3" />
+                                <Text className="text-gray-600 text-xs ml-1">25 min</Text>
+                            </View>
+                        </View>
+                        <Heart size={18} color="#ef4444" />
+                    </Pressable>
+
+                    {/* Quiz Item 4 */}
+                    <Pressable className="bg-white rounded-2xl p-4 shadow-sm flex-row items-center">
+                        <View className="bg-purple-100 rounded-xl p-3 mr-4">
+                            <BookOpen size={20} color="#8b5cf6" />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-gray-800 font-semibold text-base mb-1">Literature Classics</Text>
+                            <Text className="text-gray-500 text-sm mb-1">Shakespeare & Poetry • 15 questions</Text>
+                            <View className="flex-row items-center">
+                                <Star size={12} color="#fbbf24" />
+                                <Text className="text-gray-600 text-xs ml-1">4.7</Text>
+                                <Clock size={12} color="#6b7280" className="ml-3" />
+                                <Text className="text-gray-600 text-xs ml-1">20 min</Text>
+                            </View>
+                        </View>
+                        <Heart size={18} color="#ef4444" />
+                    </Pressable>
+                </View>
+
+                {/* Recent Favorites */}
+                <Text className="text-lg font-semibold text-gray-800 mb-4 mt-6">Recently Added</Text>
+
+                <View className="space-y-3 gap-2">
+                    <Pressable className="bg-white rounded-xl p-4 shadow-sm flex-row items-center">
+                        <BookOpen size={20} color="#3b82f6" />
+                        <View className="flex-1 ml-3">
+                            <Text className="text-gray-800 font-medium">Literature Quiz</Text>
+                            <Text className="text-gray-500 text-sm">Shakespeare & Poetry</Text>
+                        </View>
+                        <ChevronRight size={16} color="#9ca3af" />
+                    </Pressable>
+
+                    <Pressable className="bg-white rounded-xl p-4 shadow-sm flex-row items-center">
+                        <BookOpen size={20} color="#10b981" />
+                        <View className="flex-1 ml-3">
+                            <Text className="text-gray-800 font-medium">Geography Challenge</Text>
+                            <Text className="text-gray-500 text-sm">World Capitals</Text>
+                        </View>
+                        <ChevronRight size={16} color="#9ca3af" />
+                    </Pressable>
+
+                    <Pressable className="bg-white rounded-xl p-4 shadow-sm flex-row items-center">
+                        <BookOpen size={20} color="#f97316" />
+                        <View className="flex-1 ml-3">
+                            <Text className="text-gray-800 font-medium">Art History</Text>
+                            <Text className="text-gray-500 text-sm">Renaissance Masters</Text>
+                        </View>
+                        <ChevronRight size={16} color="#9ca3af" />
+                    </Pressable>
+                </View>
+
+                {/* Bottom Spacing */}
+                <View className="h-6" />
+            </ScrollView>
+        </View>
+    );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
