@@ -1,0 +1,21 @@
+{
+    "cli": {
+        "version": ">= 16.19.1",
+        "appVersionSource": "remote"
+    },
+    "build": {
+        "preview": {
+            "pnpm": "9.15.9",
+            "android": {
+                "buildType": "apk"
+            }
+        },
+        "production": {
+            "autoIncrement": true,
+            "pnpm": "9.15.9",
+            "android": {
+                "buildType": "app-bundle"
+            }
+        }
+    }
+}

@@ -1,0 +1,51 @@
+diff --git a/babel.js b/babel.js
+index d84e52b5ccf59123bb7aee019a853724b20ef99f..dc26f810dd2bbb11139ad7bc3cd382d383c12717 100644
+--- a/babel.js
++++ b/babel.js	
+@@ -1,16 +1,33 @@
+ module.exports = function () {
+-  return {
+-    plugins: [
+-      require("./dist/babel-plugin").default,
+-      [
+-        "@babel/plugin-transform-react-jsx",
+-        {
+-          runtime: "automatic",
+-          importSource: "react-native-css-interop",
+-        },
+-      ],
+-      // Use this plugin in reanimated 4 and later
+-      "react-native-worklets/plugin",
++  var workletsPlugin;
++  try {
++    var reanimatedPkg = require('react-native-reanimated/package.json');
++    var version = reanimatedPkg.version.split('.');
++    var major = parseInt(version[0], 10);
++    if (major >= 4) {
++      workletsPlugin = 'react-native-worklets/plugin';
++    }
++  } catch (_) {
++    try {
++      require.resolve('react-native-worklets/plugin');
++      workletsPlugin = 'react-native-worklets/plugin';
++    } catch (_) {}
++  }
++
++  var plugins = [
++    require("./dist/babel-plugin").default,
++    [
++      "@babel/plugin-transform-react-jsx",
++      {
++        runtime: "automatic",
++        importSource: "react-native-css-interop",
++      },
+     ],
+-  };
++  ];
++
++  if (workletsPlugin) {
++    plugins.push(workletsPlugin);
++  }
++
++  return { plugins: plugins };
+ };
