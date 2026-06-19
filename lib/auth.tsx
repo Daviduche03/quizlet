@@ -58,8 +58,12 @@ export function useUser(): AuthContextValue {
   return ctx;
 }
 
-export function getAuthErrorMessage(error: AuthError): string {
-  switch (error.code) {
+export function getAuthErrorMessage(error: unknown): string {
+  if (error instanceof Error && !('code' in error)) {
+    return error.message;
+  }
+  const authError = error as AuthError;
+  switch (authError.code) {
     case 'auth/invalid-email':
       return 'Invalid email address.';
     case 'auth/user-disabled':
@@ -75,7 +79,11 @@ export function getAuthErrorMessage(error: AuthError): string {
       return 'Password must be at least 6 characters.';
     case 'auth/too-many-requests':
       return 'Too many attempts. Please try again later.';
+    case 'auth/account-exists-with-different-credential':
+      return 'An account already exists with this email using a different sign-in method.';
+    case 'auth/popup-closed-by-user':
+      return 'Google sign-in was cancelled.';
     default:
-      return error.message;
+      return authError.message ?? 'Something went wrong.';
   }
 }

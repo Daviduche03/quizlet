@@ -69,7 +69,7 @@ const FeatureCard = ({
 export const FeaturedRail = ({ onLockedPress }: { onLockedPress?: () => void }) => {
     const features = [
         {
-            title: "Emotional Mirror",
+            title: "E-Mirror",
             description: "Reflect with AI therapy and capture what matters.",
             image: require('@/assets/images/emotion.png'),
             isLocked: false,

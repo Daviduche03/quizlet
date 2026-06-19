@@ -1,27 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import Svg, { Path } from 'react-native-svg';
+import { View, Text, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { GoogleLogo } from '@/components/GoogleLogo';
+import { useGoogleSignIn } from '@/hooks/useGoogleSignIn';
 import { useUser, getAuthErrorMessage } from '@/lib/auth';
-
-const GoogleLogo = ({ width = 20, height = 20 }) => (
-  <Svg width={width} height={height} viewBox="0 0 48 48">
-    <Path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.7 17.74 9.5 24 9.5z"/>
-    <Path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-    <Path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-    <Path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-  </Svg>
-);
 
 export default function LoginScreen() {
   const router = useRouter();
   const { signIn } = useUser();
+  const { signInWithGoogle, googleLoading, googleReady } = useGoogleSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const busy = loading || googleLoading;
 
   const handleSignIn = async () => {
     if (!email.trim() || !password.trim()) {
@@ -44,12 +37,15 @@ export default function LoginScreen() {
     router.push('/signup');
   };
 
-  const handleGoogleSignIn = () => {
-    Alert.alert('Coming Soon', 'Google sign-in is not yet available.');
-  };
-
-  const handleAppleSignIn = () => {
-    Alert.alert('Coming Soon', 'Apple sign-in is not yet available.');
+  const handleGoogleSignIn = async () => {
+    setError('');
+    try {
+      await signInWithGoogle();
+      router.replace('/(tabs)');
+    } catch (e: any) {
+      if (e?.message === 'Google sign-in was cancelled.') return;
+      setError(getAuthErrorMessage(e));
+    }
   };
 
   return (
@@ -80,7 +76,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             value={email}
             onChangeText={setEmail}
-            editable={!loading}
+            editable={!busy}
           />
         </View>
 
@@ -93,14 +89,14 @@ export default function LoginScreen() {
             secureTextEntry
             value={password}
             onChangeText={setPassword}
-            editable={!loading}
+            editable={!busy}
           />
         </View>
 
         <TouchableOpacity
-          className={`bg-[#4677b1] rounded-2xl py-4 items-center mb-6 ${loading ? 'opacity-60' : ''}`}
+          className={`bg-[#4677b1] rounded-2xl py-4 items-center mb-6 ${busy ? 'opacity-60' : ''}`}
           onPress={handleSignIn}
-          disabled={loading}
+          disabled={busy}
         >
           {loading ? (
             <ActivityIndicator color="white" />
@@ -111,7 +107,7 @@ export default function LoginScreen() {
 
         <View className="flex-row justify-center items-center mb-10">
           <Text className="text-[#a0a0a0] text-base font-semibold">Don't have an account? </Text>
-          <TouchableOpacity onPress={handleCreateAccount} disabled={loading}>
+          <TouchableOpacity onPress={handleCreateAccount} disabled={busy}>
             <Text className="text-[#e0e0e0] text-base font-bold">Create Account</Text>
           </TouchableOpacity>
         </View>
@@ -123,23 +119,20 @@ export default function LoginScreen() {
         </View>
 
         <TouchableOpacity
-          className="bg-white rounded-2xl py-4 flex-row items-center justify-center mb-4"
-          onPress={handleAppleSignIn}
-          disabled={loading}
-        >
-          <FontAwesome name="apple" size={22} color="black" style={{ marginRight: 10, marginBottom: 2 }} />
-          <Text className="text-black text-lg font-extrabold">Sign in with Apple</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="bg-white rounded-2xl py-4 flex-row items-center justify-center mb-10"
+          className={`bg-white rounded-2xl py-4 flex-row items-center justify-center mb-10 ${busy || !googleReady ? 'opacity-60' : ''}`}
           onPress={handleGoogleSignIn}
-          disabled={loading}
+          disabled={busy || !googleReady}
         >
-          <View className="mr-3">
-            <GoogleLogo width={22} height={22} />
-          </View>
-          <Text className="text-black text-lg font-extrabold">Sign in with Google</Text>
+          {googleLoading ? (
+            <ActivityIndicator color="black" />
+          ) : (
+            <>
+              <View className="mr-3">
+                <GoogleLogo width={22} height={22} />
+              </View>
+              <Text className="text-black text-lg font-extrabold">Sign in with Google</Text>
+            </>
+          )}
         </TouchableOpacity>
 
         <View className="mt-auto items-center mb-4">

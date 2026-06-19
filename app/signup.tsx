@@ -2,18 +2,22 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { GoogleLogo } from '@/components/GoogleLogo';
+import { useGoogleSignIn, isNewGoogleUser } from '@/hooks/useGoogleSignIn';
 import { useUser, getAuthErrorMessage } from '@/lib/auth';
 import { saveProfile } from '@/lib/profile';
 
 export default function SignUpScreen() {
   const router = useRouter();
   const { signUp } = useUser();
+  const { signInWithGoogle, googleLoading, googleReady } = useGoogleSignIn();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const busy = loading || googleLoading;
 
   const handleSignUp = async () => {
     if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
@@ -38,6 +42,23 @@ export default function SignUpScreen() {
       setError(getAuthErrorMessage(e));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setError('');
+    try {
+      const cred = await signInWithGoogle();
+      if (isNewGoogleUser(cred)) {
+        await saveProfile(cred.user.uid, {
+          name: cred.user.displayName ?? '',
+          email: cred.user.email ?? '',
+        });
+      }
+      router.replace('/(tabs)');
+    } catch (e: any) {
+      if (e?.message === 'Google sign-in was cancelled.') return;
+      setError(getAuthErrorMessage(e));
     }
   };
 
@@ -68,7 +89,7 @@ export default function SignUpScreen() {
             autoCapitalize="words"
             value={name}
             onChangeText={setName}
-            editable={!loading}
+            editable={!busy}
           />
         </View>
 
@@ -82,7 +103,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             value={email}
             onChangeText={setEmail}
-            editable={!loading}
+            editable={!busy}
           />
         </View>
 
@@ -95,7 +116,7 @@ export default function SignUpScreen() {
             secureTextEntry
             value={password}
             onChangeText={setPassword}
-            editable={!loading}
+            editable={!busy}
           />
         </View>
 
@@ -108,14 +129,14 @@ export default function SignUpScreen() {
             secureTextEntry
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            editable={!loading}
+            editable={!busy}
           />
         </View>
 
         <TouchableOpacity
-          className={`bg-[#4677b1] rounded-2xl py-4 items-center mb-6 ${loading ? 'opacity-60' : ''}`}
+          className={`bg-[#4677b1] rounded-2xl py-4 items-center mb-6 ${busy ? 'opacity-60' : ''}`}
           onPress={handleSignUp}
-          disabled={loading}
+          disabled={busy}
         >
           {loading ? (
             <ActivityIndicator color="white" />
@@ -126,10 +147,33 @@ export default function SignUpScreen() {
 
         <View className="flex-row justify-center items-center mb-10">
           <Text className="text-[#a0a0a0] text-base font-semibold">Already have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/login')} disabled={loading}>
+          <TouchableOpacity onPress={() => router.push('/login')} disabled={busy}>
             <Text className="text-[#e0e0e0] text-base font-bold">Sign In</Text>
           </TouchableOpacity>
         </View>
+
+        <View className="flex-row items-center mb-10">
+          <View className="flex-1 h-[1px] bg-[#3a3a3c]" />
+          <Text className="text-[#8e8e93] px-4 font-bold text-xs tracking-wider">OR</Text>
+          <View className="flex-1 h-[1px] bg-[#3a3a3c]" />
+        </View>
+
+        <TouchableOpacity
+          className={`bg-white rounded-2xl py-4 flex-row items-center justify-center mb-10 ${busy || !googleReady ? 'opacity-60' : ''}`}
+          onPress={handleGoogleSignUp}
+          disabled={busy || !googleReady}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="black" />
+          ) : (
+            <>
+              <View className="mr-3">
+                <GoogleLogo width={22} height={22} />
+              </View>
+              <Text className="text-black text-lg font-extrabold">Sign up with Google</Text>
+            </>
+          )}
+        </TouchableOpacity>
 
         <View className="mt-auto items-center mb-4">
           <Text className="text-[#8e8e93] text-sm font-bold">Medical Disclaimer</Text>

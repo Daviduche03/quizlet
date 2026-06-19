@@ -199,7 +199,7 @@ export default function AIChatScreen() {
       >
         <View className="flex-row items-center">
           <View className="w-10 h-10 rounded-full bg-white items-center justify-center mr-3 overflow-hidden border border-white/10">
-            <Image source={require('@/assets/images/icon.png')} className="w-full h-full" resizeMode="contain" />
+            <Image source={require('@/assets/images/logo.jpeg')} className="w-full h-full" resizeMode="contain" />
           </View>
           <View>
             <Text className="text-white text-lg font-bold">AI Therapy</Text>
