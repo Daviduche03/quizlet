@@ -5,7 +5,10 @@
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/logo.jpeg",
-    "scheme": "mydailytherapy",
+    "scheme": [
+      "mydailytherapy",
+      "com.googleusercontent.apps.885581435770-pn55uea29eblol18r6th0abuladavbcb"
+    ],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

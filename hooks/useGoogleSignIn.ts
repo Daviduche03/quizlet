@@ -1,29 +1,49 @@
 import { useState } from 'react';
+import { Platform } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
 import { GoogleAuthProvider, signInWithCredential, getAdditionalUserInfo, type UserCredential } from 'firebase/auth';
 import { auth } from '@/firebaseConfig';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
+const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
-const redirectUri = makeRedirectUri({
-  scheme: 'mydailytherapy',
-  path: 'oauthredirect',
-});
+const getGoogleReverseScheme = (clientId: string) => {
+  const id = clientId.replace('.apps.googleusercontent.com', '');
+  return `com.googleusercontent.apps.${id}`;
+};
+
+const getRedirectUri = (clientId: string) =>
+  `${getGoogleReverseScheme(clientId)}:/oauthredirect`;
+
+const isGoogleConfigured = () => {
+  if (!webClientId) return false;
+  if (Platform.OS === 'android') return !!androidClientId;
+  if (Platform.OS === 'ios') return !!(iosClientId ?? webClientId);
+  return true;
+};
 
 export function useGoogleSignIn() {
   const [loading, setLoading] = useState(false);
-  const [request, , promptAsync] = Google.useAuthRequest({
-    webClientId,
-    clientId: webClientId,
-    redirectUri,
-  });
+  const platformClientId = Platform.OS === 'android' ? androidClientId : (iosClientId ?? webClientId);
+  const redirectUri = platformClientId ? getRedirectUri(platformClientId) : undefined;
+
+  const [request, , promptAsync] = Google.useAuthRequest(
+    {
+      webClientId,
+      androidClientId,
+      iosClientId,
+      clientId: Platform.OS === 'android' ? androidClientId : undefined,
+      redirectUri,
+    },
+    {},
+  );
 
   const signInWithGoogle = async (): Promise<UserCredential> => {
-    if (!webClientId) {
+    if (!isGoogleConfigured()) {
       throw new Error('Google sign-in is not configured.');
     }
     if (!request) {
@@ -55,7 +75,7 @@ export function useGoogleSignIn() {
   return {
     signInWithGoogle,
     googleLoading: loading,
-    googleReady: !!request && !!webClientId,
+    googleReady: !!request && isGoogleConfigured(),
   };
 }
 
