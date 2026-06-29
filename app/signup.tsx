@@ -67,9 +67,9 @@ export default function SignUpScreen() {
       <StatusBar style="light" />
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 px-6 justify-center"
+        className="flex-1 px-6 pt-16"
       >
-        <View className="mb-8 mt-12">
+        <View className="mb-8">
           <Text className="text-4xl font-extrabold text-white mb-2 tracking-tight">Create Account</Text>
           <Text className="text-[#a0a0a0] text-lg font-semibold">Join My Daily Therapy</Text>
         </View>
