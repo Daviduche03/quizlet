@@ -107,9 +107,13 @@ export const SubscriptionPaywall = ({
             Unlock the full potential of My Daily Therapy
           </Text>
 
-          {loading || !offerings ? (
+          {loading ? (
             <View className="items-center justify-center py-16">
               <ActivityIndicator size="large" color="#a1a1aa" />
+            </View>
+          ) : !offerings?.length ? (
+            <View className="items-center justify-center py-16">
+              <Text className="text-[#a1a1aa] text-base font-semibold">No subscription plans available.</Text>
             </View>
           ) : (
             <>
